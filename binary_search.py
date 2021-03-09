@@ -27,6 +27,28 @@ def find_smallest_positive(xs):
     True
     '''
 
+    left = 0
+    right = len(xs) - 1
+    def helper(left, right):
+        mid = (left + right) // 2
+        if xs[mid] == 0:
+            return mid + 1
+        if left == right:
+            if xs[mid] > 0:
+                return mid
+            else:
+                return None
+        if xs[mid] > 0:
+            return helper(left, mid - 1)
+        if xs[mid] < 0:
+            return helper(mid + 1, right)
+    if len(xs) == 0:
+        return None
+    if xs[0] > 0:
+        return 0
+    else:
+        return helper(left, right)
+
 
 def count_repeats(xs, x):
     '''
@@ -53,6 +75,59 @@ def count_repeats(xs, x):
     0
     '''
 
+    if xs == []:
+        return 0
+
+    def low(left, right):
+        if left == 0 and xs[left] == x:
+            return left
+        if left == right:
+            if xs[left] == x:
+                return left
+            else:
+                return -1
+        mid = (left + right) // 2
+        if xs[mid] < x:
+            right = mid - 1
+        if xs[mid] > x:
+            left = mid + 1
+        if xs[mid] == x and xs[mid - 1] == x:
+            right = mid - 1
+        if xs[mid] == x and xs[mid - 1] != x:
+            return mid
+            left = mid
+        return low(left, right)
+
+    def high(left, right):
+        if right == len(xs) - 1 and xs[right] == x:
+            return right
+        if left == right:
+            if xs[right] == x:
+                return right
+            else:
+                return -1
+        mid = (left + right) // 2
+        if xs[mid] < x:
+            right = mid - 1
+        if xs[mid] > x:
+            left = mid + 1
+        if len(xs) - 1 != mid:
+            if xs[mid] == x and xs[mid + 1] == x:
+                left = mid + 1
+        if xs[mid] == x and xs[mid + 1] != x:
+            return mid
+            right = mid
+        return high(left, right)
+
+    left = low(0, len(xs) - 1)
+    right = high(0, len(xs) - 1)
+    if left == -1 and right == -1:
+        return 0
+    if left == -1 or right == -1:
+        return 1
+    else:
+        return right - left + 1
+
 
 def argmin(f, lo, hi, epsilon=1e-3):
     '''
@@ -72,7 +147,7 @@ def argmin(f, lo, hi, epsilon=1e-3):
     APPLICATION:
     Essentially all data mining algorithms are just this argmin implementation in disguise.
     If you go on to take the data mining class (CS145/MATH166),
-    we will spend a lot of time talking about different f functions that can be minimized and their applications.
+    we will spend a lot of time talking about different f functions that can be min_point and their applications.
     But the actual minimization code will all be a variant of this binary search.
 
     WARNING:
@@ -87,6 +162,27 @@ def argmin(f, lo, hi, epsilon=1e-3):
     >>> argmin(lambda x: (x-5)**2, -20, 0)
     -0.00016935087808430278
     '''
+
+    if hi-lo < epsilon:
+        return hi
+
+    else: 
+        high = f(hi)
+        low = f(lo)
+
+        mid = (hi+lo)/2
+        m1 = (mid+lo)/2
+        m2 = (mid+hi)/2
+
+        m1_value = f(m1)
+        m2_value = f(m2)
+
+        min_point = min(low, m1_value, m2_value, high)
+
+        if min_point  == low or min_point == m1_value:
+            return argmin(f, lo, m2, epsilon) 
+        else:
+            return argmin(f, m1, hi, epsilon)
 
 
 ################################################################################
