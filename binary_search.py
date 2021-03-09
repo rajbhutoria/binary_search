@@ -165,16 +165,16 @@ def argmin(f, lo, hi, epsilon=1e-3):
     -0.00016935087808430278
     '''
 
-    if hi-lo < epsilon:
+    if hi - lo < epsilon:
         return hi
 
     else:
         high = f(hi)
         low = f(lo)
 
-        mid = (hi+lo)/2
-        m1 = (mid+lo)/2
-        m2 = (mid+hi)/2
+        mid = (hi + lo) / 2
+        m1 = (mid + lo) / 2
+        m2 = (mid + hi) / 2
 
         m1_value = f(m1)
         m2_value = f(m2)
